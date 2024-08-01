@@ -1,0 +1,20 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { db, Source } from 'astro:db'
+
+export const prerender = true
+export const getStaticPaths = (async () => {
+  const sourcePages = await db.select().from(Source)
+  return sourcePages.map((page) => {
+    return {
+      params: { id: page.id },
+      props: { page }
+    }
+  })
+}) satisfies GetStaticPaths
+
+const { id } = Astro.params
+const { page } = Astro.props
+---
+
+This is a page for {id} source!
