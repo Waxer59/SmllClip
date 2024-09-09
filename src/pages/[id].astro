@@ -1,16 +1,13 @@
 ---
 import type { GetStaticPaths } from 'astro'
-import { db, Source } from 'astro:db'
 
 export const prerender = true
 export const getStaticPaths = (async () => {
-  const sourcePages = await db.select().from(Source)
-  return sourcePages.map((page) => {
-    return {
-      params: { id: page.id },
-      props: { page }
-    }
-  })
+  const documents = await (await fetch('/api/documents')).json()
+  return documents.map((doc: any) => ({
+    params: { id: doc.id },
+    props: { page: doc.page }
+  }))
 }) satisfies GetStaticPaths
 
 const { id } = Astro.params
