@@ -1,0 +1,26 @@
+---
+
+---
+
+<div id="editor" class="h-96 rounded-full w-[90%] mx-auto"></div>
+
+<script>
+  import * as monaco from 'monaco-editor'
+
+  const editorContainer = document.getElementById('editor') as HTMLDivElement
+
+  //   const model =
+
+  const editor = monaco.editor.create(editorContainer, {
+    value: 'function x() {\n\tconsole.log("Hello world!");\n}',
+    theme: 'vs-dark',
+    language: 'javascript',
+    fontLigatures: true,
+    automaticLayout: true
+  })
+
+  //   import('monaco-themes/themes/Monokai.json').then((data: any) => {
+  //     console.log("HERE");
+  //     monaco.editor.defineTheme('monokai', data)
+  //   })
+</script>

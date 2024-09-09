@@ -1,32 +1,12 @@
 ---
-import { Source } from 'astro:db'
 import Head from '@components/Head.astro'
-import Header from '@components/Header.astro'
 import '@fontsource-variable/inter'
 import '@styles/global.css'
-
-interface Props {
-  page?: typeof Source | null
-}
-
-const { page = null } = Astro.props
 ---
 
 <html lang="en">
   <Head />
-  <body>
-    <Header {page} />
-    <div id="editor" class="h-[100vh]"></div>
+  <body class="max-w-7xl mx-auto bg-neutral-950 mt-36">
+    <slot />
   </body>
 </html>
-
-<script>
-  import * as monaco from 'monaco-editor'
-
-  monaco.editor.create(document.getElementById('editor')!, {
-    value: 'function x() {\n\tconsole.log("Hello world!");\n}',
-    theme: 'vs-dark',
-    language: 'javascript',
-    fontLigatures: true
-  })
-</script>
