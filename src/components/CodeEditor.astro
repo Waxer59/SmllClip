@@ -1,17 +1,22 @@
 ---
-
+import PrimaryButton from './PrimaryButton.astro'
+import CodeIcon from './icons/CodeIcon.astro'
 ---
 
-<div id="editor" class="h-96 rounded-full w-[90%] mx-auto"></div>
+<div id="editor" class="h-96 w-[90%] mx-auto"></div>
+
+<PrimaryButton
+  onClick={() => console.log('Save')}
+  className="flex items-center gap-2 text-lg mt-10 mx-auto">
+  Share code <CodeIcon />
+</PrimaryButton>
 
 <script>
   import * as monaco from 'monaco-editor'
 
   const editorContainer = document.getElementById('editor') as HTMLDivElement
 
-  //   const model =
-
-  const editor = monaco.editor.create(editorContainer, {
+  const monacoEditor = monaco.editor.create(editorContainer, {
     value: 'function x() {\n\tconsole.log("Hello world!");\n}',
     theme: 'vs-dark',
     language: 'javascript',
@@ -19,8 +24,8 @@
     automaticLayout: true
   })
 
-  //   import('monaco-themes/themes/Monokai.json').then((data: any) => {
-  //     console.log("HERE");
-  //     monaco.editor.defineTheme('monokai', data)
-  //   })
+  import('monaco-themes/themes/Dracula.json').then((data: any) => {
+    monaco.editor.defineTheme('dracula', data)
+    monaco.editor.setTheme('dracula')
+  })
 </script>
