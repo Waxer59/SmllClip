@@ -12,7 +12,7 @@ const { onClick, className } = Astro.props
   <slot />
 </button>
 
-<script define:vars={{ onClick }}>
+<script is:inline define:vars={{ onClick }}>
   const button = document.querySelector('button')
   button.addEventListener('click', onClick)
 </script>
