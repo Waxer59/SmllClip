@@ -2,3 +2,8 @@ body {
   font-family: 'Inter Variable', sans-serif;
   color: white;
 }
+
+.monaco-editor>div,
+.monaco-editor {
+  border-radius: 10px;
+}
