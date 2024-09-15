@@ -1,0 +1,31 @@
+---
+import type { SelectItem } from '../types'
+
+interface Props {
+  id: string
+  title: string
+  selectedOptionValue?: string
+  options: SelectItem[]
+}
+
+const { id, title, options, selectedOptionValue } = Astro.props
+---
+
+<div class="flex flex-col gap-2">
+  <label
+    for={id}
+    class="block text-sm font-medium text-neutral-900 dark:text-white capitalize"
+    >{title}</label
+  >
+  <select
+    id={id}
+    class="block capitalize w-full p-2 mb-6 text-sm text-neutral-900 border border-neutral-300 rounded-lg bg-neutral-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    {
+      options.map(({ value, label }) => (
+        <option value={value} selected={value === selectedOptionValue}>
+          {label}
+        </option>
+      ))
+    }
+  </select>
+</div>

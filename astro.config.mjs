@@ -8,4 +8,7 @@ export default defineConfig({
   output: 'server',
   adapter: netlify(),
   integrations: [tailwind(), icon()],
+  devToolbar: {
+    enabled: false
+  }
 })

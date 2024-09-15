@@ -1,9 +1,27 @@
 ---
+import { DEFAULT_LANGUAGE, DEFAULT_THEME, LANGUAGES, THEMES } from '@constants'
 import PrimaryButton from './PrimaryButton.astro'
+import Select from '@components/Select.astro'
 import CodeIcon from './icons/CodeIcon.astro'
 ---
 
-<div id="editor" class="h-96 w-[90%] mx-auto"></div>
+<div class="flex flex-col items-center w-[90%] mx-auto">
+  <div class="flex gap-2 items-center justify-end w-full">
+    <Select
+      id="theme"
+      title="Theme"
+      options={THEMES}
+      selectedOptionValue={DEFAULT_THEME}
+    />
+    <Select
+      id="language"
+      title="Language"
+      options={LANGUAGES}
+      selectedOptionValue={DEFAULT_LANGUAGE}
+    />
+  </div>
+  <div id="editor" class="h-96 w-full"></div>
+</div>
 
 <PrimaryButton
   onClick={() => console.log('Save')}
@@ -13,19 +31,81 @@ import CodeIcon from './icons/CodeIcon.astro'
 
 <script>
   import * as monaco from 'monaco-editor'
+  import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+  import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+  import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+  import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+  import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
+  const DEFAULT_LANGUAGE = 'javascript'
+  const DEFAULT_THEME = 'dracula'
+  const selectTheme = document.getElementById('theme') as HTMLSelectElement
+  const selectLanguage = document.getElementById(
+    'language'
+  ) as HTMLSelectElement
   const editorContainer = document.getElementById('editor') as HTMLDivElement
 
-  const monacoEditor = monaco.editor.create(editorContainer, {
-    value: 'function x() {\n\tconsole.log("Hello world!");\n}',
-    theme: 'vs-dark',
-    language: 'javascript',
-    fontLigatures: true,
-    automaticLayout: true
+  await changeTheme(DEFAULT_THEME)
+
+  selectTheme.addEventListener('change', async (e) => {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    await changeTheme(value)
   })
 
-  import('monaco-themes/themes/Dracula.json').then((data: any) => {
-    monaco.editor.defineTheme('dracula', data)
-    monaco.editor.setTheme('dracula')
+  selectLanguage.addEventListener('change', (e) => {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    changeLanguage(value)
   })
+
+  const editor = monaco.editor.create(editorContainer, {
+    value: '// Write your code here',
+    language: DEFAULT_LANGUAGE,
+    fontLigatures: true,
+    automaticLayout: true,
+    padding: {
+      top: 15
+    }
+  })
+
+  self.MonacoEnvironment = {
+    getWorker(_, label) {
+      if (label === 'json') {
+        return new jsonWorker()
+      }
+      if (label === 'css' || label === 'scss' || label === 'less') {
+        return new cssWorker()
+      }
+      if (label === 'html' || label === 'handlebars' || label === 'razor') {
+        return new htmlWorker()
+      }
+      if (label === 'typescript' || label === 'javascript') {
+        return new tsWorker()
+      }
+      return new editorWorker()
+    }
+  }
+
+  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
+
+  async function changeTheme(theme: string) {
+    try {
+      const res = await fetch(`/themes/${theme}.json`)
+      const data = await res.json()
+      monaco.editor.defineTheme(theme, data)
+    } catch (error) {}
+
+    monaco.editor.setTheme(theme)
+  }
+
+  function changeLanguage(language: string) {
+    const model = editor.getModel()
+
+    if (!model) {
+      return
+    }
+
+    monaco.editor.setModelLanguage(model, language)
+  }
 </script>

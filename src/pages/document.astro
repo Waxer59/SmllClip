@@ -26,9 +26,8 @@ import FileIcon from '@components/icons/FileIcon.astro'
   import 'tinymce/themes/silver/theme.min.js'
   import 'tinymce/models/dom/model.min.js'
 
-  import 'tinymce/skins/ui/oxide/skin.js'
-  import 'tinymce/skins/ui/oxide/content.js'
-  import 'tinymce/skins/ui/oxide/content.min.css'
+  /* Import a skin (can be a custom skin instead of the default) */
+  import 'tinymce/skins/ui/oxide-dark/skin.js'
 
   /* Import plugins */
   import 'tinymce/plugins/autosave'
@@ -48,8 +47,11 @@ import FileIcon from '@components/icons/FileIcon.astro'
   import 'tinymce/plugins/lists'
   import 'tinymce/plugins/table'
 
+  /* content UI CSS is required */
+  import 'tinymce/skins/ui/oxide-dark/content.js'
+
   /* The default content CSS can be changed or replaced with appropriate CSS for the editor content. */
-  import 'tinymce/skins/content/default/content.js'
+  import 'tinymce/skins/content/dark/content.js'
 
   tinymce.init({
     selector: '#document-editor',
@@ -58,7 +60,9 @@ import FileIcon from '@components/icons/FileIcon.astro'
       'advlist code emoticons link lists table autosave preview wordcount searchreplace code autolink fullscreen visualblocks insertdatetime',
     toolbar:
       'undo redo | blocks | bold italic backcolor emoticons | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-    skin_url: 'default',
-    content_css: 'default'
+    skin_url: 'dark',
+    content_css: 'dark',
+    promotion: false,
+    license_key: 'gpl'
   })
 </script>
