@@ -1,68 +1,13 @@
 ---
-import PrimaryButton from '@components/PrimaryButton.astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
-import FileIcon from '@components/icons/FileIcon.astro'
+import Modal from '@components/Modal.astro'
+import DocumentEditor from '@components/DocumentEditor.astro'
 ---
 
 <BaseLayout>
-  <div class="h-96 w-[90%] mx-auto">
-    <textarea id="document-editor"></textarea>
-  </div>
-  <PrimaryButton
-    className="flex items-center gap-2 text-lg mt-10 mx-auto"
-    onClick={() => {}}>
-    Share document <FileIcon />
-  </PrimaryButton>
+  <Modal open>
+    <h2 class="text-2xl font-bold text-gray-50">Share document</h2>
+    <p>Here is the link to the document</p>
+  </Modal>
+  <DocumentEditor />
 </BaseLayout>
-
-<script>
-  /* Import TinyMCE */
-  import tinymce from 'tinymce'
-
-  /* Default icons are required. After that, import custom icons if applicable */
-  import 'tinymce/icons/default/icons.min.js'
-
-  /* Required TinyMCE components */
-  import 'tinymce/themes/silver/theme.min.js'
-  import 'tinymce/models/dom/model.min.js'
-
-  /* Import a skin (can be a custom skin instead of the default) */
-  import 'tinymce/skins/ui/oxide-dark/skin.js'
-
-  /* Import plugins */
-  import 'tinymce/plugins/autosave'
-  import 'tinymce/plugins/code'
-  import 'tinymce/plugins/autolink'
-  import 'tinymce/plugins/fullscreen'
-  import 'tinymce/plugins/insertdatetime'
-  import 'tinymce/plugins/wordcount'
-  import 'tinymce/plugins/searchreplace'
-  import 'tinymce/plugins/preview'
-  import 'tinymce/plugins/visualblocks'
-  import 'tinymce/plugins/advlist'
-  import 'tinymce/plugins/code'
-  import 'tinymce/plugins/emoticons'
-  import 'tinymce/plugins/emoticons/js/emojis'
-  import 'tinymce/plugins/link'
-  import 'tinymce/plugins/lists'
-  import 'tinymce/plugins/table'
-
-  /* content UI CSS is required */
-  import 'tinymce/skins/ui/oxide-dark/content.js'
-
-  /* The default content CSS can be changed or replaced with appropriate CSS for the editor content. */
-  import 'tinymce/skins/content/dark/content.js'
-
-  tinymce.init({
-    selector: '#document-editor',
-    resize: false,
-    plugins:
-      'advlist code emoticons link lists table autosave preview wordcount searchreplace code autolink fullscreen visualblocks insertdatetime',
-    toolbar:
-      'undo redo | blocks | bold italic backcolor emoticons | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-    skin_url: 'dark',
-    content_css: 'dark',
-    promotion: false,
-    license_key: 'gpl'
-  })
-</script>

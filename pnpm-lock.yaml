@@ -32,6 +32,9 @@ dependencies:
   astro-icon:
     specifier: ^1.1.0
     version: 1.1.0
+  canvas-confetti:
+    specifier: ^1.9.3
+    version: 1.9.3
   monaco-editor:
     specifier: ^0.50.0
     version: 0.50.0
@@ -2148,6 +2151,10 @@ packages:
 
   /caniuse-lite@1.0.30001649:
     resolution: {integrity: sha512-fJegqZZ0ZX8HOWr6rcafGr72+xcgJKI9oWfDW5DrD7ExUtgZC7a7R7ZYmZqplh7XDocFdGeIFn7roAxhOeYrPQ==}
+    dev: false
+
+  /canvas-confetti@1.9.3:
+    resolution: {integrity: sha512-rFfTURMvmVEX1gyXFgn5QMn81bYk70qa0HLzcIOSVEyl57n6o9ItHeBtUSWdvKAPY0xlvBHno4/v3QPrT83q9g==}
     dev: false
 
   /ccount@2.0.1:
