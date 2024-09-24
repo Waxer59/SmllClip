@@ -1,33 +1,53 @@
 ---
 import { DEFAULT_LANGUAGE, DEFAULT_THEME, LANGUAGES, THEMES } from '@constants'
-import PrimaryButton from './PrimaryButton.astro'
 import Select from '@components/Select.astro'
 import CodeIcon from './icons/CodeIcon.astro'
+import PrimaryButton from './PrimaryButton.astro'
+
+interface Props {
+  theme?: string
+  language?: string
+  showControls?: boolean
+}
+
+const { theme, language, showControls } = Astro.props
 ---
 
 <div class="flex flex-col items-center w-[90%] mx-auto">
-  <div class="flex gap-2 items-center justify-end w-full">
-    <Select
-      id="theme"
-      title="Theme"
-      options={THEMES}
-      selectedOptionValue={DEFAULT_THEME}
-    />
-    <Select
-      id="language"
-      title="Language"
-      options={LANGUAGES}
-      selectedOptionValue={DEFAULT_LANGUAGE}
-    />
+  {
+    showControls && (
+      <div class="flex gap-2 items-center justify-end w-full">
+        <Select
+          id="theme"
+          title="Theme"
+          options={THEMES}
+          selectedOptionValue={DEFAULT_THEME}
+        />
+        <Select
+          id="language"
+          title="Language"
+          options={LANGUAGES}
+          selectedOptionValue={DEFAULT_LANGUAGE}
+        />
+      </div>
+    )
+  }
+  <div
+    id="editor"
+    class="h-96 w-full"
+    data-theme={theme}
+    data-language={language}>
   </div>
-  <div id="editor" class="h-96 w-full"></div>
+  {
+    showControls && (
+      <PrimaryButton
+        id="btn-share"
+        className="flex items-center gap-2 text-lg mt-10 mx-auto">
+        Share code <CodeIcon />
+      </PrimaryButton>
+    )
+  }
 </div>
-
-<PrimaryButton
-  onClick={() => console.log('Save')}
-  className="flex items-center gap-2 text-lg mt-10 mx-auto">
-  Share code <CodeIcon />
-</PrimaryButton>
 
 <script>
   import * as monaco from 'monaco-editor'
@@ -37,27 +57,16 @@ import CodeIcon from './icons/CodeIcon.astro'
   import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
   import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
-  const DEFAULT_LANGUAGE = 'javascript'
-  const DEFAULT_THEME = 'dracula'
   const selectTheme = document.getElementById('theme') as HTMLSelectElement
   const selectLanguage = document.getElementById(
     'language'
   ) as HTMLSelectElement
+  const btnShare = document.getElementById('btn-share') as HTMLButtonElement
   const editorContainer = document.getElementById('editor') as HTMLDivElement
+  const DEFAULT_LANGUAGE = editorContainer.dataset.language as string
+  const DEFAULT_THEME = editorContainer.dataset.theme as string
 
   await changeTheme(DEFAULT_THEME)
-
-  selectTheme.addEventListener('change', async (e) => {
-    const target = e.target as HTMLSelectElement
-    const value = target.value
-    await changeTheme(value)
-  })
-
-  selectLanguage.addEventListener('change', (e) => {
-    const target = e.target as HTMLSelectElement
-    const value = target.value
-    changeLanguage(value)
-  })
 
   const editor = monaco.editor.create(editorContainer, {
     value: '// Write your code here',
@@ -108,4 +117,21 @@ import CodeIcon from './icons/CodeIcon.astro'
 
     monaco.editor.setModelLanguage(model, language)
   }
+
+  selectTheme?.addEventListener('change', async (e) => {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    await changeTheme(value)
+  })
+
+  selectLanguage?.addEventListener('change', (e) => {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    changeLanguage(value)
+  })
+
+  btnShare?.addEventListener('click', async () => {
+    const code = editor.getValue()
+    console.log(code)
+  })
 </script>

@@ -1,18 +1,14 @@
 ---
 interface Props {
+  id?: string
   className?: string
-  onClick: () => void
 }
 
-const { onClick, className } = Astro.props
+const { id, className } = Astro.props
 ---
 
 <button
+  id={id}
   class={`bg-neutral-900 text-white rounded-lg px-4 py-2 hover:bg-neutral-800 dark:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors ${className}`}>
   <slot />
 </button>
-
-<script is:inline define:vars={{ onClick }}>
-  const button = document.querySelector('button')
-  button.addEventListener('click', onClick)
-</script>

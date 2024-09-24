@@ -11,6 +11,9 @@ export const TABS = [
   }
 ]
 
+export const SHORT_ID_INITIAL_LENGTH = 5
+export const SHORT_ID_MAX_LENGTH = 12
+
 export const DEFAULT_LANGUAGE = 'javascript'
 export const DEFAULT_THEME = 'dracula'
 

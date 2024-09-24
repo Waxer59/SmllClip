@@ -1,17 +1,27 @@
 ---
 import PrimaryButton from '@components/PrimaryButton.astro'
 import FileIcon from '@components/icons/FileIcon.astro'
+
+interface Props {
+  showControls?: boolean
+}
+
+const { showControls } = Astro.props
 ---
 
 <div class="h-96 w-[90%] mx-auto">
   <textarea id="document-editor"></textarea>
 </div>
 
-<PrimaryButton
-  className="flex items-center gap-2 text-lg mt-10 mx-auto"
-  onClick={() => {}}>
-  Share document <FileIcon />
-</PrimaryButton>
+{
+  showControls && (
+    <PrimaryButton
+      id="btn-share"
+      className="flex items-center gap-2 text-lg mt-10 mx-auto">
+      Share document <FileIcon />
+    </PrimaryButton>
+  )
+}
 
 <script>
   /* Import TinyMCE */
@@ -51,6 +61,8 @@ import FileIcon from '@components/icons/FileIcon.astro'
   /* The default content CSS can be changed or replaced with appropriate CSS for the editor content. */
   import 'tinymce/skins/content/dark/content.js'
 
+  const btnShare = document.getElementById('btn-share') as HTMLButtonElement
+
   tinymce.init({
     selector: '#document-editor',
     resize: false,
@@ -62,5 +74,10 @@ import FileIcon from '@components/icons/FileIcon.astro'
     content_css: 'dark',
     promotion: false,
     license_key: 'gpl'
+  })
+
+  btnShare?.addEventListener('click', async () => {
+    const content = tinymce.get('document-editor')!.getContent()
+    console.log(content)
   })
 </script>
