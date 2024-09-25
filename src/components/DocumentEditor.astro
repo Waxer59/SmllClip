@@ -1,6 +1,7 @@
 ---
 import PrimaryButton from '@components/PrimaryButton.astro'
 import FileIcon from '@components/icons/FileIcon.astro'
+import ShareDocumentModal from './ShareDocumentModal.astro'
 
 interface Props {
   showControls?: boolean
@@ -8,6 +9,8 @@ interface Props {
 
 const { showControls } = Astro.props
 ---
+
+<ShareDocumentModal id="share-document-modal" />
 
 <div class="h-96 w-[90%] mx-auto">
   <textarea id="document-editor"></textarea>
@@ -24,6 +27,10 @@ const { showControls } = Astro.props
 }
 
 <script>
+  import { DocumentType } from '@constants'
+  import { Notyf } from 'notyf'
+  import 'notyf/notyf.min.css'
+
   /* Import TinyMCE */
   import tinymce from 'tinymce'
 
@@ -62,6 +69,13 @@ const { showControls } = Astro.props
   import 'tinymce/skins/content/dark/content.js'
 
   const btnShare = document.getElementById('btn-share') as HTMLButtonElement
+  const modal = document.getElementById(
+    'share-document-modal'
+  ) as HTMLDivElement
+  const txtModalLink = document.getElementById(
+    'modal-txt-link'
+  ) as HTMLSpanElement
+  const notyf = new Notyf()
 
   tinymce.init({
     selector: '#document-editor',
@@ -78,6 +92,43 @@ const { showControls } = Astro.props
 
   btnShare?.addEventListener('click', async () => {
     const content = tinymce.get('document-editor')!.getContent()
-    console.log(content)
+
+    if (content.trim().length === 0) {
+      notyf.error('Please enter some content')
+      return
+    }
+
+    notyf.open({
+      type: 'custom',
+      message: 'Uploading document...',
+      background: '#262626',
+      duration: 5000
+    })
+
+    const response = await fetch('/api/documents', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content,
+        type: DocumentType.document
+      })
+    })
+    const data = await response.json()
+
+    if (response.ok) {
+      notyf.dismissAll()
+
+      modal.classList.remove('hidden')
+      modal.setAttribute('aria-hidden', 'false')
+      txtModalLink.innerText = data.url
+
+      notyf.success('Document shared successfully')
+      tinymce.get('document-editor')!.setContent('')
+    } else {
+      notyf.dismissAll()
+      notyf.error('Something went wrong')
+    }
   })
 </script>

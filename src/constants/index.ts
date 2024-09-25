@@ -17,6 +17,11 @@ export const SHORT_ID_MAX_LENGTH = 12
 export const DEFAULT_LANGUAGE = 'javascript'
 export const DEFAULT_THEME = 'dracula'
 
+export enum DocumentType {
+  code = 'code',
+  document = 'document'
+}
+
 export const LANGUAGES: SelectItem[] = [
   {
     value: 'abap',

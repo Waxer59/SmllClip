@@ -20,9 +20,6 @@ dependencies:
   '@iconify-json/mingcute':
     specifier: ^1.1.18
     version: 1.1.18
-  appwrite:
-    specifier: ^15.0.0
-    version: 15.0.0
   astro:
     specifier: ^4.13.0
     version: 4.13.0(typescript@5.5.4)
@@ -38,6 +35,15 @@ dependencies:
   monaco-editor:
     specifier: ^0.50.0
     version: 0.50.0
+  nanoid:
+    specifier: ^5.0.7
+    version: 5.0.7
+  node-appwrite:
+    specifier: ^14.1.0
+    version: 14.1.0
+  notyf:
+    specifier: ^3.10.0
+    version: 3.10.0
   tailwindcss:
     specifier: ^3.4.7
     version: 3.4.7
@@ -47,6 +53,9 @@ dependencies:
   typescript:
     specifier: ^5.5.4
     version: 5.5.4
+  zod:
+    specifier: ^3.23.8
+    version: 3.23.8
 
 devDependencies:
   '@typescript-eslint/parser':
@@ -1858,10 +1867,6 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
-    dev: false
-
-  /appwrite@15.0.0:
-    resolution: {integrity: sha512-rzmo+87tizYLs3YnRLets+vMUF85S/OHkgiGgp0UKcKJj0U1RktAsuIecFqRROKfkqs0fKzggRAIs3RCoYQQwA==}
     dev: false
 
   /aproba@2.0.0:
@@ -4178,6 +4183,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  /nanoid@5.0.7:
+    resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
+
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
@@ -4186,6 +4197,16 @@ packages:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
     dependencies:
       '@types/nlcst': 2.0.3
+    dev: false
+
+  /node-appwrite@14.1.0:
+    resolution: {integrity: sha512-kuKAZrdaAcGYOMUXtxNb1j+uIy+FIMiiU1dFkgwTXLsMLeLvC6HJ8/FH/kN9JyrWR2a2zcGN7gWfyQgWYoLMTA==}
+    dependencies:
+      node-fetch-native-with-agent: 1.7.2
+    dev: false
+
+  /node-fetch-native-with-agent@1.7.2:
+    resolution: {integrity: sha512-5MaOOCuJEvcckoz7/tjdx1M6OusOY6Xc5f459IaruGStWnKzlI1qpNgaAwmn4LmFYcsSlj+jBMk84wmmRxfk5g==}
     dev: false
 
   /node-fetch@2.7.0:
@@ -4225,6 +4246,10 @@ packages:
   /normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /notyf@3.10.0:
+    resolution: {integrity: sha512-Mtnp+0qiZxgrH+TzVlzhWyZceHdAZ/UWK0/ju9U0HQeDpap1mZ8cC7H5wSI5mwgni6yeAjaxsTw0sbMK+aSuHw==}
     dev: false
 
   /npm-run-path@4.0.1:

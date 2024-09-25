@@ -11,7 +11,7 @@ const { open, id } = Astro.props
   id={id}
   aria-hidden={!open}
   class={`${open ? '' : 'hidden'} w-full h-full absolute flex justify-center items-center right-0 top-0 z-10 bg-neutral-800/40 rounded-md shadow-lg`}>
-  <div class="h-96 w-96 bg-neutral-800 rounded-md p-8">
+  <div class="w-96 bg-neutral-800 rounded-md p-8">
     <slot />
   </div>
 </div>

@@ -1,0 +1,67 @@
+---
+import CopyIcon from './icons/CopyIcon.astro'
+import Modal from './Modal.astro'
+import Tooltip from './Tooltip.astro'
+
+interface Props {
+  id?: string
+  open?: boolean
+}
+
+const { id, open } = Astro.props
+---
+
+<Modal id={id} open={open}>
+  <div class="flex flex-col gap-8 h-full">
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h2 class="text-4xl font-bold text-gray-50">Share document</h2>
+      <p>Here is the link to the document</p>
+    </div>
+    <div class="flex items-center gap-4 justify-evenly">
+      <span
+        id="modal-txt-link"
+        class="text-base truncate text-gray-50 bg-neutral-700 p-2 rounded-md">
+      </span>
+      <Tooltip text="Copy link">
+        <button id="btn-copy" class="text-sm text-white p-2 rounded-md">
+          <CopyIcon />
+        </button>
+      </Tooltip>
+    </div>
+  </div>
+</Modal>
+
+<script is:inline define:vars={{ id }}>
+  const modal = document.getElementById(id)
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal()
+    }
+  })
+
+  document.addEventListener('mousedown', (e) => {
+    if (e.target === modal) {
+      closeModal()
+    }
+  })
+
+  function closeModal() {
+    modal.classList.add('hidden')
+    modal.setAttribute('aria-hidden', 'true')
+  }
+</script>
+
+<script>
+  import { Notyf } from 'notyf'
+  import 'notyf/notyf.min.css'
+
+  const notyf = new Notyf()
+  const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement
+  const txtLink = document.getElementById('modal-txt-link') as HTMLSpanElement
+
+  btnCopy.addEventListener('click', () => {
+    navigator.clipboard.writeText(txtLink.innerText)
+    notyf.success('Copied to clipboard!')
+  })
+</script>
