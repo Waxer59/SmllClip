@@ -1,5 +1,9 @@
 ---
 import { Head as CapoHead } from 'astro-capo'
+
+const desc =
+  'SmllClip is a code sharing platform that allows you to share code snippets with others.'
+const cannonicalURL = import.meta.env.FRONTEND_URL
 ---
 
 <CapoHead>
@@ -8,4 +12,25 @@ import { Head as CapoHead } from 'astro-capo'
   <meta name="viewport" content="width=device-width" />
   <meta name="generator" content={Astro.generator} />
   <title>SmllClip</title>
+
+  <meta name="description" content={desc} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="canonical" href={cannonicalURL} />
+  <meta
+    name="keywords"
+    content="code, sharing, snippets, code snippets, code sharing, code clip, code snippet, code snippets, clip, clipboard, copy, clipboard, copy code, copy code snippet, copy code snippets"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SmllClip" />
+  <meta name="twitter:description" content={desc} />
+  <meta name="twitter:image" content="/og.png" />
+
+  <meta property="og:image" content="/og.png" />
+  <meta property="og:title" content="SmllClip" />
+  <meta property="og:description" content={desc} />
+  <meta property="og:url" content={Astro.url} />
+  <meta property="og:site_name" content="SmllClip" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
 </CapoHead>
