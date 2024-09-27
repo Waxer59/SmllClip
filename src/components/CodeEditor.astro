@@ -3,17 +3,30 @@ import { DEFAULT_LANGUAGE, DEFAULT_THEME, LANGUAGES, THEMES } from '@constants'
 import Select from '@components/Select.astro'
 import CodeIcon from './icons/CodeIcon.astro'
 import PrimaryButton from './PrimaryButton.astro'
+import ShareDocumentModal from './ShareDocumentModal.astro'
 
 interface Props {
   theme?: string
   language?: string
   showControls?: boolean
+  initialContent?: string
+  editor_class?: string
+  isReadOnly?: boolean
 }
 
-const { theme, language, showControls } = Astro.props
+const {
+  theme = DEFAULT_THEME,
+  language = DEFAULT_LANGUAGE,
+  showControls,
+  initialContent,
+  editor_class,
+  isReadOnly
+} = Astro.props
 ---
 
-<div class="flex flex-col items-center w-[90%] mx-auto">
+<ShareDocumentModal id="share-code-modal" />
+
+<div class="flex flex-col items-center h-full w-[90%] mx-auto">
   {
     showControls && (
       <div class="flex gap-2 items-center justify-end w-full">
@@ -34,15 +47,17 @@ const { theme, language, showControls } = Astro.props
   }
   <div
     id="editor"
-    class="h-96 w-full"
+    class={`${editor_class} h-96 w-full`}
     data-theme={theme}
+    data-is-read-only={isReadOnly ? 'true' : 'false'}
+    data-initial-content={initialContent}
     data-language={language}>
   </div>
   {
     showControls && (
       <PrimaryButton
         id="btn-share"
-        className="flex items-center gap-2 text-lg mt-10 mx-auto">
+        className="flex items-center gap-2 text-lg my-10 mx-auto">
         Share code <CodeIcon />
       </PrimaryButton>
     )
@@ -50,6 +65,10 @@ const { theme, language, showControls } = Astro.props
 </div>
 
 <script>
+  import { DocumentType } from '@constants'
+  import { Notyf } from 'notyf'
+  import 'notyf/notyf.min.css'
+
   import * as monaco from 'monaco-editor'
   import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
   import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -63,42 +82,58 @@ const { theme, language, showControls } = Astro.props
   ) as HTMLSelectElement
   const btnShare = document.getElementById('btn-share') as HTMLButtonElement
   const editorContainer = document.getElementById('editor') as HTMLDivElement
-  const DEFAULT_LANGUAGE = editorContainer.dataset.language as string
-  const DEFAULT_THEME = editorContainer.dataset.theme as string
+  const modal = document.getElementById('share-code-modal') as HTMLDivElement
+  const txtModalLink = document.getElementById(
+    'modal-txt-link'
+  ) as HTMLSpanElement
+  const notyf = new Notyf()
 
-  await changeTheme(DEFAULT_THEME)
+  let editor: monaco.editor.IStandaloneCodeEditor
 
-  const editor = monaco.editor.create(editorContainer, {
-    value: '// Write your code here',
-    language: DEFAULT_LANGUAGE,
-    fontLigatures: true,
-    automaticLayout: true,
-    padding: {
-      top: 15
+  // If the component is conditionally rendered
+  // the script will be executed anyway so we need to check if the element exists
+  // https://github.com/withastro/astro/issues/5283
+  if (editorContainer) {
+    const isReadOnly = editorContainer.dataset.isReadOnly === 'true'
+    const initialContent = editorContainer.dataset.initialContent
+    const theme = editorContainer.dataset.theme!
+
+    await changeTheme(theme)
+
+    editor = monaco.editor.create(editorContainer, {
+      value: initialContent ?? '// Write your code here',
+      language: editorContainer.dataset.language,
+      fontLigatures: true,
+      automaticLayout: true,
+      padding: {
+        top: 15
+      },
+      readOnly: isReadOnly
+    })
+
+    self.MonacoEnvironment = {
+      getWorker(_, label) {
+        if (label === 'json') {
+          return new jsonWorker()
+        }
+        if (label === 'css' || label === 'scss' || label === 'less') {
+          return new cssWorker()
+        }
+        if (label === 'html' || label === 'handlebars' || label === 'razor') {
+          return new htmlWorker()
+        }
+        if (label === 'typescript' || label === 'javascript') {
+          return new tsWorker()
+        }
+        return new editorWorker()
+      }
     }
-  })
 
-  self.MonacoEnvironment = {
-    getWorker(_, label) {
-      if (label === 'json') {
-        return new jsonWorker()
-      }
-      if (label === 'css' || label === 'scss' || label === 'less') {
-        return new cssWorker()
-      }
-      if (label === 'html' || label === 'handlebars' || label === 'razor') {
-        return new htmlWorker()
-      }
-      if (label === 'typescript' || label === 'javascript') {
-        return new tsWorker()
-      }
-      return new editorWorker()
-    }
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
   }
 
-  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
-
   async function changeTheme(theme: string) {
+    editorContainer.dataset.theme = theme
     try {
       const res = await fetch(`/themes/${theme}.json`)
       const data = await res.json()
@@ -110,6 +145,7 @@ const { theme, language, showControls } = Astro.props
 
   function changeLanguage(language: string) {
     const model = editor.getModel()
+    editorContainer.dataset.language = language
 
     if (!model) {
       return
@@ -132,6 +168,54 @@ const { theme, language, showControls } = Astro.props
 
   btnShare?.addEventListener('click', async () => {
     const code = editor.getValue()
-    console.log(code)
+
+    if (code.trim().length === 0) {
+      notyf.error('Please enter some content')
+      return
+    }
+
+    notyf.open({
+      type: 'custom',
+      message: 'Uploading document...',
+      background: '#262626',
+      duration: 5000
+    })
+
+    let response
+
+    try {
+      response = await fetch('/api/documents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: code,
+          type: DocumentType.code,
+          language: editorContainer.dataset.language,
+          theme: editorContainer.dataset.theme
+        })
+      })
+    } catch (error) {
+      notyf.error('Something went wrong')
+      return
+    }
+
+    const data = await response.json()
+
+    if (response.ok) {
+      notyf.dismissAll()
+
+      modal.classList.remove('hidden')
+      modal.setAttribute('aria-hidden', 'false')
+      txtModalLink.innerText = data.url
+
+      editor.setValue('')
+      editor.focus()
+    } else {
+      notyf.dismissAll()
+
+      notyf.error('Something went wrong')
+    }
   })
 </script>

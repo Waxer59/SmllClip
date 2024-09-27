@@ -415,7 +415,7 @@ export const LANGUAGES: SelectItem[] = [
     value: 'scala',
     label: 'scala'
   }
-]
+] as const
 
 export const THEMES: SelectItem[] = [
   {
@@ -646,4 +646,4 @@ export const THEMES: SelectItem[] = [
     value: 'monoindustrial',
     label: 'monoindustrial'
   }
-]
+] as const

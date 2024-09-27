@@ -5,22 +5,29 @@ import ShareDocumentModal from './ShareDocumentModal.astro'
 
 interface Props {
   showControls?: boolean
+  initialContent?: string
+  isReadOnly?: boolean
+  document_class?: string
 }
 
-const { showControls } = Astro.props
+const { showControls, initialContent, isReadOnly, document_class } = Astro.props
 ---
 
 <ShareDocumentModal id="share-document-modal" />
 
-<div class="h-96 w-[90%] mx-auto">
-  <textarea id="document-editor"></textarea>
+<div class={`${document_class} h-96 w-[90%] mx-auto`}>
+  <textarea
+    id="document-editor"
+    class="h-full w-full"
+    data-is-read-only={isReadOnly ? 'true' : 'false'}>{initialContent}</textarea
+  >
 </div>
 
 {
   showControls && (
     <PrimaryButton
       id="btn-share"
-      className="flex items-center gap-2 text-lg mt-10 mx-auto">
+      className="flex items-center gap-2 text-lg my-10 mx-auto">
       Share document <FileIcon />
     </PrimaryButton>
   )
@@ -75,20 +82,31 @@ const { showControls } = Astro.props
   const txtModalLink = document.getElementById(
     'modal-txt-link'
   ) as HTMLSpanElement
+  const textarea = document.getElementById(
+    'document-editor'
+  ) as HTMLTextAreaElement
   const notyf = new Notyf()
 
-  tinymce.init({
-    selector: '#document-editor',
-    resize: false,
-    plugins:
-      'advlist code emoticons link lists table autosave preview wordcount searchreplace code autolink fullscreen visualblocks insertdatetime',
-    toolbar:
-      'undo redo | blocks | bold italic backcolor emoticons | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-    skin_url: 'dark',
-    content_css: 'dark',
-    promotion: false,
-    license_key: 'gpl'
-  })
+  // If the component is conditionally rendered
+  // the script will be executed anyway so we need to check if the element exists
+  // https://github.com/withastro/astro/issues/5283
+  if (textarea) {
+    const isReadOnly = textarea.dataset.isReadOnly === 'true'
+
+    tinymce.init({
+      selector: '#document-editor',
+      resize: false,
+      plugins:
+        'advlist code emoticons link lists table autosave preview wordcount searchreplace code autolink fullscreen visualblocks insertdatetime',
+      toolbar:
+        'undo redo | blocks | bold italic backcolor emoticons | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+      skin_url: 'dark',
+      content_css: 'dark',
+      promotion: false,
+      license_key: 'gpl',
+      readonly: isReadOnly
+    })
+  }
 
   btnShare?.addEventListener('click', async () => {
     const content = tinymce.get('document-editor')!.getContent()
@@ -105,16 +123,24 @@ const { showControls } = Astro.props
       duration: 5000
     })
 
-    const response = await fetch('/api/documents', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        content,
-        type: DocumentType.document
+    let response
+
+    try {
+      response = await fetch('/api/documents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content,
+          type: DocumentType.document
+        })
       })
-    })
+    } catch (error) {
+      notyf.error('Something went wrong')
+      return
+    }
+
     const data = await response.json()
 
     if (response.ok) {
@@ -128,6 +154,7 @@ const { showControls } = Astro.props
       tinymce.get('document-editor')!.setContent('')
     } else {
       notyf.dismissAll()
+
       notyf.error('Something went wrong')
     }
   })

@@ -3,6 +3,8 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import DocumentEditor from '@components/DocumentEditor.astro'
 ---
 
-<BaseLayout>
-  <DocumentEditor showControls />
+<BaseLayout showTabs>
+  <div class="h-96">
+    <DocumentEditor showControls />
+  </div>
 </BaseLayout>

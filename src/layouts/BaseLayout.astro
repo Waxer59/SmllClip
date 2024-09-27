@@ -4,13 +4,19 @@ import Head from '@components/Head.astro'
 import Tabs from '@components/Tabs.astro'
 import '@fontsource-variable/inter'
 import '@styles/global.css'
+
+interface Props {
+  showTabs?: boolean
+}
+
+const { showTabs } = Astro.props
 ---
 
 <html lang="en">
   <Head />
   <body class="max-w-7xl mx-auto bg-neutral-950 mt-16">
     <h1 class="text-center text-4xl font-bold text-white mb-16">SmllClip</h1>
-    <Tabs tabs={TABS} />
+    {showTabs && <Tabs tabs={TABS} />}
     <slot />
   </body>
 </html>

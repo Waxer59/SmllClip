@@ -1,0 +1,101 @@
+---
+import { bucket, databases } from 'src/appwrite'
+import { Query } from 'node-appwrite'
+import { arrayBufferToString } from '@helpers/arrayBufferToString'
+import {
+  AppwriteBuckets,
+  AppwriteCollections,
+  AppwriteDatabases
+} from 'src/types'
+import { DocumentType } from '@constants'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import CodeEditor from '@components/CodeEditor.astro'
+import PrimaryButton from '@components/PrimaryButton.astro'
+import CopyIcon from '@components/icons/CopyIcon.astro'
+import DocumentEditor from '@components/DocumentEditor.astro'
+
+const { code } = Astro.params
+
+if (!code) {
+  return new Response(null, { status: 400 })
+}
+
+let document
+
+try {
+  document = await databases.listDocuments(
+    AppwriteDatabases.shared_documents,
+    AppwriteCollections.documents,
+    [Query.equal('code', code)]
+  )
+} catch (error) {
+  console.log(error)
+  return new Response(null, { status: 500 })
+}
+
+if (document.total === 0) {
+  return new Response(null, { status: 404 })
+}
+
+const { document_id, type, theme, language } = document.documents[0]
+const contentBuff = await bucket.getFileView(
+  AppwriteBuckets.documents,
+  document_id
+)
+const content = arrayBufferToString(contentBuff)
+---
+
+<BaseLayout showTabs={false}>
+  <main>
+    {
+      type === DocumentType.code && (
+        <CodeEditor
+          isReadOnly
+          showControls={false}
+          theme={theme}
+          language={language}
+          initialContent={content}
+          editor_class="h-[500px]"
+        />
+      )
+    }
+    {
+      type === DocumentType.document && (
+        <DocumentEditor
+          isReadOnly
+          initialContent={content}
+          document_class="h-[500px]"
+        />
+      )
+    }
+
+    <PrimaryButton
+      className="flex items-center gap-2 text-lg my-10 mx-auto"
+      id="btn-copy-content">
+      Copy <CopyIcon />
+    </PrimaryButton>
+  </main>
+</BaseLayout>
+
+<script>
+  import { Notyf } from 'notyf'
+  import 'notyf/notyf.min.css'
+
+  const notyf = new Notyf()
+
+  const btnCopy = document.getElementById(
+    'btn-copy-content'
+  ) as HTMLButtonElement
+
+  btnCopy.addEventListener('click', () => {
+    notyf.success('Copied to clipboard!')
+  })
+</script>
+
+<script is:inline define:vars={{ content }}>
+  const btnCopy = document.getElementById('btn-copy-content')
+
+  btnCopy.addEventListener('click', () => {
+    navigator.clipboard.writeText(content)
+  })
+</script>

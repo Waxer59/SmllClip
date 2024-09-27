@@ -1,9 +1,8 @@
 ---
-import { DEFAULT_THEME, DEFAULT_LANGUAGE } from '@constants'
 import CodeEditor from '@components/CodeEditor.astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 ---
 
-<BaseLayout>
-  <CodeEditor showControls theme={DEFAULT_THEME} language={DEFAULT_LANGUAGE} />
+<BaseLayout showTabs>
+  <CodeEditor showControls />
 </BaseLayout>

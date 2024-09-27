@@ -7,6 +7,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@utils/*": ["src/utils/*"],
       "@styles/*": ["src/styles/*"],
+      "@helpers/*": ["src/helpers/*"],
       "@constants": ["src/constants/index.ts"],
     }
   }
