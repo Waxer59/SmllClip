@@ -116,10 +116,10 @@ export const POST: APIRoute = async ({ request }) => {
     new File([body.content], documentId, { type: 'text/plain' })
   )
 
-  // @ts-expect-error If the type is not code, the theme and language will be undefined
   const codeTypeData =
     parsedBody.data.type === DocumentType.code
-      ? { theme: parsedBody.data.theme, language: parsedBody.data.language }
+      ? // @ts-expect-error If the type is not code, the theme and language will be undefined
+        { theme: parsedBody.data.theme, language: parsedBody.data.language }
       : {}
 
   const document = await databases.createDocument(
