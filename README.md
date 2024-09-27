@@ -1,47 +1,34 @@
-# Astro Starter Kit: Minimal
+# SmllClip
 
-```sh
-npm create astro@latest -- --template minimal
+<img src="./public/og.png" width="800px" />
+
+## How to run the project?
+
+1. Install all the dependencies with the command:
+
+```bash
+pnpm i
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+2. Rename the file `.template.env` to `.env` and fill the fields.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+   - `FRONTEND_URL` - The URL of the frontend. For example, if you are running the project locally, it should be `http://localhost:3000`.
+   - `APPWRITE_ENDPOINT` - The endpoint of the Appwrite server.
+   - `APPWRITE_PROJECT_ID` - The project ID of the Appwrite server.
+   - `APPWRITE_API_KEY` - The API key of the Appwrite server.
 
-## 🚀 Project Structure
+3. Run the project with the command:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+pnpm dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Technologies used
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [Astro](https://astro.build/)
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+- [Astro capo](https://github.com/natemoo-re/astro-capo)
+- [Appwrite](https://appwrite.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [TinyMCE](https://www.tiny.cloud/)
+- [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)
