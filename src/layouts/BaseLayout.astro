@@ -4,6 +4,8 @@ import Head from '@components/Head.astro'
 import Tabs from '@components/Tabs.astro'
 import '@fontsource-variable/inter'
 import '@styles/global.css'
+import Tooltip from '@components/Tooltip.astro'
+import PuzzleIcon from '@components/icons/PuzzleIcon.astro'
 
 interface Props {
   showTabs?: boolean
@@ -18,5 +20,16 @@ const { showTabs } = Astro.props
     <h1 class="text-center text-4xl font-bold text-white mb-16">SmllClip</h1>
     {showTabs && <Tabs tabs={TABS} />}
     <slot />
+    <div class="fixed bottom-12 right-12">
+      <Tooltip text="Integrate SmllClip" direction="left">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://docs.smll.app"
+          class="rounded-full bg-neutral-800 p-2 text-white hover:bg-neutral-700 transition-colors">
+          <PuzzleIcon class="w-6 h-6" />
+        </a>
+      </Tooltip>
+    </div>
   </body>
 </html>

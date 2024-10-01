@@ -1,14 +1,22 @@
 ---
 interface Props {
   text: string
+  direction?: 'top' | 'bottom' | 'left' | 'right'
 }
 
-const { text } = Astro.props
+const { text, direction = 'top' } = Astro.props
+
+const directionClass = {
+  top: 'bottom-full',
+  bottom: 'top-full',
+  left: 'right-full',
+  right: 'left-full'
+}[direction]
 ---
 
-<div class="relative group flex justify-center">
+<div class="relative group flex items-center justify-center">
   <span
-    class="absolute -top-9 whitespace-nowrap opacity-0 group-hover:opacity-100 text-white transition-all bg-neutral-700 py-1 px-2 rounded select-none"
+    class={`absolute ${directionClass} m-2 whitespace-nowrap text-white transition-all bg-neutral-700 py-1 px-2 rounded select-none opacity-0 group-hover:opacity-100`}
     >{text}</span
   >
   <slot />
