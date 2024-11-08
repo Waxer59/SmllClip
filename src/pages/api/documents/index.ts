@@ -1,16 +1,20 @@
+import {
+  DocumentType,
+  LANGUAGES,
+  SHORT_ID_INITIAL_LENGTH,
+  SHORT_ID_MAX_LENGTH,
+  THEMES
+} from '@constants'
 import type { APIRoute } from 'astro'
-import { databases, bucket } from 'src/appwrite'
 import { Query, ID } from 'node-appwrite'
-import { nanoid } from 'nanoid'
-import { DocumentType, LANGUAGES, THEMES } from '@constants'
+import { z } from 'zod'
+import { bucket, databases } from 'src/appwrite'
 import {
   AppwriteBuckets,
-  AppwriteCollections,
-  AppwriteDatabases
+  AppwriteDatabases,
+  AppwriteCollections
 } from 'src/types'
-import { z } from 'astro:content'
-import { SHORT_ID_INITIAL_LENGTH, SHORT_ID_MAX_LENGTH } from '@constants'
-import { arrayBufferToString } from '@helpers/arrayBufferToString'
+import { nanoid } from 'nanoid'
 
 const FRONTEND_URL = import.meta.env.FRONTEND_URL
 
@@ -49,42 +53,6 @@ const getUniqueShortId = async (
   }
 
   return getUniqueShortId(length + 1)
-}
-
-export const GET: APIRoute = async ({ url }) => {
-  const urlObject = new URL(url)
-  const code = urlObject.searchParams.get('code')
-
-  if (!code) {
-    return new Response('Missing code', { status: 400 })
-  }
-
-  const document = await databases.listDocuments(
-    AppwriteDatabases.shared_documents,
-    AppwriteCollections.documents,
-    [Query.equal('code', [code])]
-  )
-
-  if (document.total === 0) {
-    return new Response(null, { status: 404 })
-  }
-
-  const { theme, language, type, document_id } = document.documents[0]
-
-  const contentBuff = await bucket.getFileView(
-    AppwriteBuckets.documents,
-    document_id
-  )
-  const content = arrayBufferToString(contentBuff)
-  const codeTypeData = type === DocumentType.code ? { theme, language } : {}
-
-  const response = {
-    type,
-    ...codeTypeData,
-    content
-  }
-
-  return new Response(JSON.stringify(response), { status: 200 })
 }
 
 export const POST: APIRoute = async ({ request }) => {
